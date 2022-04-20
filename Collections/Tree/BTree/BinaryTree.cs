@@ -88,8 +88,13 @@ namespace Collections.Tree.BTree
                 {
                     if (node == null)
                     {
-                        isFinished = true;
-                        break;
+                        if (i == 0)
+                        {
+                            isFinished = true;
+                            break;
+                        }
+
+                        continue;
                     }
 
                     if (node.Left != null) toProcessNext[i++] = node.Left;
@@ -134,11 +139,6 @@ namespace Collections.Tree.BTree
             if (array.Length - arrayIndex < Count)
             {
                 throw new ArgumentException("passed array does not have required free space");
-            }
-
-            if (array.GetType().GetArrayRank() > 1)
-            {
-                throw new ArgumentException("passed array cannot be multidimenisional");
             }
 
             foreach (var elem in this)
@@ -360,42 +360,48 @@ namespace Collections.Tree.BTree
 
         private IEnumerable<T> WalkAscending(Node<T> subtree)
         {
-            if (subtree.Left != null)
+            if (subtree != null)
             {
-                foreach(var node in WalkAscending(subtree.Left))
+                if (subtree.Left != null)
                 {
-                    yield return node;
+                    foreach (var node in WalkAscending(subtree.Left))
+                    {
+                        yield return node;
+                    }
                 }
-            }
 
-            yield return subtree.Value;
+                yield return subtree.Value;
 
-            if (subtree.Right != null)
-            {
-                foreach (var node in WalkAscending(subtree.Right))
+                if (subtree.Right != null)
                 {
-                    yield return node;
+                    foreach (var node in WalkAscending(subtree.Right))
+                    {
+                        yield return node;
+                    }
                 }
             }
         }
 
         private IEnumerable<T> WalkDescending(Node<T> subtree)
         {
-            if (subtree.Right != null)
+            if (subtree != null)
             {
-                foreach (var node in WalkAscending(subtree.Right))
+                if (subtree.Right != null)
                 {
-                    yield return node;
+                    foreach (var node in WalkDescending(subtree.Right))
+                    {
+                        yield return node;
+                    }
                 }
-            }
 
-            yield return subtree.Value;
+                yield return subtree.Value;
 
-            if (subtree.Left != null)
-            {
-                foreach (var node in WalkAscending(subtree.Left))
+                if (subtree.Left != null)
                 {
-                    yield return node;
+                    foreach (var node in WalkDescending(subtree.Left))
+                    {
+                        yield return node;
+                    }
                 }
             }
         }
